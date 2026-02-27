@@ -5,14 +5,15 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
+  // protected by middleware, but useEffect serves as a fallback client-side guard
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!session) {
       router.push('/auth');
     }
-  }, [status, router]);
+  }, [session, router]);
 
   const handleLogout = () => {
     signOut({ callbackUrl: '/auth' });
