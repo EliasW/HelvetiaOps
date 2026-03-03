@@ -26,4 +26,28 @@ Server-side middleware in `middleware.ts` protects authenticated routes:
 3. If no session exists, user is redirected to `/auth` (login page)
 4. After successful login, user is redirected back to `/dashboard`
 
+## Roles & Permissions
+
+This project defines three built-in roles:
+
+- `admin` — full access, can perform administrative actions
+- `manager` — can manage resources and users, but not full admin tasks
+- `viewer` — read-only access to reports and dashboards
+
+Permissions are available via helpers in `src/utils/permissions.ts` and a small `Can` component at `src/components/Can.tsx` which guards UI actions. Example usage in the dashboard:
+
+```tsx
+<Can minRole="manager">
+	<button>Manage Users</button>
+</Can>
+```
+
+Roles are assigned by the mock credentials provider:
+
+- emails containing `admin` → `admin` role
+- emails containing `manager` or `man.` → `manager` role
+- all others → `viewer` role
+
+Roles are stored in the JWT and surfaced as `session.user.role` on the client.
+
 HelvetiaOps — Enterprise Operations Management Portal Frontend-focused Next.js application with role-based access control, internationalization (EN/DE), data-heavy tables, and enterprise UX patterns.

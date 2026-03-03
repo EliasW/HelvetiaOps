@@ -27,7 +27,13 @@ export const authOptions: NextAuthOptions = {
         const { email, password } = credentials;
         // very simple mock validation, accepts any nonempty password
         if (email && password) {
-          const role = email.toLowerCase().includes('admin') ? 'admin' : 'user';
+          const norm = email.toLowerCase();
+          let role: string = 'viewer';
+          if (norm.includes('admin')) {
+            role = 'admin';
+          } else if (norm.includes('manager') || norm.includes('man.')) {
+            role = 'manager';
+          }
           return { id: email, email, role };
         }
         return null;
