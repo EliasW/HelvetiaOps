@@ -1,0 +1,69 @@
+{
+  "Home": {
+    "title": "Welcome",
+    "description": "This is the homepage",
+    "hero": {
+      "title": "Welcome to HelvetiaOps",
+      "subtitle": "Build, manage, and deploy your applications with ease.",
+      "dashboardButton": "Go to Dashboard",
+      "signInButton": "Sign In"
+    },
+    "features": {
+      "title": "Features",
+      "fast": {
+        "title": "Fast & Reliable",
+        "description": "Built on modern technology stack for optimal performance."
+      },
+      "easy": {
+        "title": "Easy to Use",
+        "description": "Intuitive interface that anyone can navigate and understand."
+      },
+      "scalable": {
+        "title": "Scalable",
+        "description": "Grow your operations without worrying about infrastructure."
+      }
+    },
+    "footer": {
+      "copyright": "© 2026 HelvetiaOps. All rights reserved."
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "signIn": "Sign In"
+    }
+  },
+  "About": {
+    "title": "About us"
+  },
+  "Dashboard": {
+    "title": "Welcome to the dashboard",
+    "loggedInAs": "Logged in as",
+    "role": "role",
+    "membersList": "members list",
+    "adminPanel": "Admin Panel",
+    "manageUsers": "Manage Users",
+    "viewReports": "View Reports",
+    "signOut": "Sign out"
+  },
+  "DashboardLayout": {
+    "appName": "HelvetiaOps",
+    "menu": "Menu",
+    "home": "Home",
+    "settings": "Settings",
+    "user": "User",
+    "loggedInUser": "Logged in User",
+    "logout": "Logout"
+  },
+  "Auth": {
+    "title": "Sign in",
+    "alreadySignedIn": "Already signed in",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Log In",
+    "signingIn": "Signing in…"
+  },
+  "AuthLayout": {
+    "appName": "HelvetiaOps",
+    "subtitle": "Operations Management Platform",
+    "copyright": "© 2026 HelvetiaOps. All rights reserved."
+  }
+}

@@ -1,0 +1,16 @@
+import { getRequestConfig } from 'next-intl/server';
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  let locale = await requestLocale;
+
+  console.log("i18n called", locale)
+  // Ensure a valid locale is used
+  if (!locale || !['en', 'de'].includes(locale)) {
+    locale = 'en';
+  }
+
+  return {
+    locale,
+    messages: (await import(`./messages/${locale}.json`)).default
+  };
+});

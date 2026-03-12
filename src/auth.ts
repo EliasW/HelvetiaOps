@@ -14,7 +14,7 @@ declare module 'next-auth' {
   }
 }
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = { 
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/auth',
+    signIn: '/en/auth', // Default to English, but we'll handle this in the auth page
   },
 };
 

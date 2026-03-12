@@ -1,34 +1,30 @@
 import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
+import createIntlMiddleware from 'next-intl/middleware';
+import { NextRequest } from 'next/server';
 
-export const middleware = withAuth(
-  (req) => {
-    const { pathname } = req.nextUrl;
-    // redirect any unauthenticated access to /dashboard
-    if (pathname.startsWith('/dashboard') && !req.nextauth?.token) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/auth';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
+const intlMiddleware = createIntlMiddleware({
+  locales: ['en', 'de'],
+  defaultLocale: 'en',
+  localePrefix: 'always'
+});
+
+export default withAuth(
+  function onSuccess(req: NextRequest) {
+    return intlMiddleware(req);
   },
+  
   {
-    callbacks: {
-      authorized: ({ token }) => !!token,
+    pages: {
+      signIn: '/en/auth',
     },
   }
+  
 );
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public (public folder)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|public|auth).*)',
-  ],
+    '/',
+    '/(en|de)/:path*',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)' 
+  ]
 };

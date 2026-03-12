@@ -1,0 +1,69 @@
+{
+  "Home": {
+    "title": "Willkommen",
+    "description": "Dies ist die Startseite",
+    "hero": {
+      "title": "Willkommen bei HelvetiaOps",
+      "subtitle": "Erstellen, verwalten und bereitstellen Sie Ihre Anwendungen mit Leichtigkeit.",
+      "dashboardButton": "Zum Dashboard",
+      "signInButton": "Anmelden"
+    },
+    "features": {
+      "title": "Funktionen",
+      "fast": {
+        "title": "Schnell & Zuverlässig",
+        "description": "Aufgebaut auf modernem Technologie-Stack für optimale Leistung."
+      },
+      "easy": {
+        "title": "Einfach zu Bedienen",
+        "description": "Intuitive Benutzeroberfläche, die jeder navigieren und verstehen kann."
+      },
+      "scalable": {
+        "title": "Skalierbar",
+        "description": "Erweitern Sie Ihre Operationen ohne sich um die Infrastruktur zu sorgen."
+      }
+    },
+    "footer": {
+      "copyright": "© 2026 HelvetiaOps. Alle Rechte vorbehalten."
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "signIn": "Anmelden"
+    }
+  },
+  "About": {
+    "title": "Über uns"
+  },
+  "Dashboard": {
+    "title": "Willkommen im Dashboard",
+    "loggedInAs": "Angemeldet als",
+    "role": "Rolle",
+    "membersList": "Mitgliederliste",
+    "adminPanel": "Admin-Panel",
+    "manageUsers": "Benutzer Verwalten",
+    "viewReports": "Berichte Anzeigen",
+    "signOut": "Abmelden"
+  },
+  "DashboardLayout": {
+    "appName": "HelvetiaOps",
+    "menu": "Menü",
+    "home": "Startseite",
+    "settings": "Einstellungen",
+    "user": "Benutzer",
+    "loggedInUser": "Angemeldeter Benutzer",
+    "logout": "Abmelden"
+  },
+  "Auth": {
+    "title": "Anmelden",
+    "alreadySignedIn": "Bereits angemeldet",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginButton": "Anmelden",
+    "signingIn": "Anmeldung läuft…"
+  },
+  "AuthLayout": {
+    "appName": "HelvetiaOps",
+    "subtitle": "Operations Management Plattform",
+    "copyright": "© 2026 HelvetiaOps. Alle Rechte vorbehalten."
+  }
+}
