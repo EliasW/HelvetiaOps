@@ -85,9 +85,9 @@ export default function DashboardHeader({
                 >
                   {translations.settings}
                 </Link>
-                <button onClick={() => setUserMenuOpen(false)}>
+                <div onClick={() => setUserMenuOpen(false)}>
                   <DashboardLogoutButton locale={locale} />
-                </button>
+                </div>
               </nav>
             </div>
           )}

@@ -17,6 +17,7 @@ export default function DashboardPageContent({
 
   const links = [
     { href: `/${locale}/dashboard`, label: t('home') },
+    { href: `/${locale}/dashboard/performance`, label: t('performance') },
     { href: `/${locale}/dashboard/settings`, label: t('settings') },
   ];
 

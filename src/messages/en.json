@@ -35,19 +35,36 @@
     "title": "About us"
   },
   "Dashboard": {
-    "title": "Welcome to the dashboard",
+    "title": "Dashboard Overview",
     "loggedInAs": "Logged in as",
     "role": "role",
     "membersList": "members list",
     "adminPanel": "Admin Panel",
     "manageUsers": "Manage Users",
     "viewReports": "View Reports",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "overview": {
+      "projects": "Active Projects",
+      "teams": "Teams",
+      "kpis": "KPIs Tracked",
+      "onTrack": "On Track",
+      "atRisk": "At Risk",
+      "offTrack": "Off Track",
+      "target": "Target",
+      "current": "Current",
+      "noKpis": "No KPIs found",
+      "noProjects": "No projects found",
+      "errorLoading": "Failed to load data",
+      "retry": "Try again",
+      "recentKpis": "KPI Overview",
+      "projectsSummary": "Projects Summary"
+    }
   },
   "DashboardLayout": {
     "appName": "HelvetiaOps",
     "menu": "Menu",
     "home": "Home",
+    "performance": "Performance",
     "settings": "Settings",
     "user": "User",
     "loggedInUser": "Logged in User",
@@ -65,5 +82,30 @@
     "appName": "HelvetiaOps",
     "subtitle": "Operations Management Platform",
     "copyright": "© 2026 HelvetiaOps. All rights reserved."
+  },
+  "Performance": {
+    "title": "Performance Analytics",
+    "dateRange": "Date Range",
+    "last7": "Last 7 days",
+    "last14": "Last 14 days",
+    "last30": "Last 30 days",
+    "last90": "Last 90 days",
+    "custom": "Custom",
+    "compare": "Compare with previous period",
+    "currentPeriod": "Current Period",
+    "previousPeriod": "Previous Period",
+    "uptime": "Uptime",
+    "responseTime": "Response Time",
+    "errorRate": "Error Rate",
+    "deployments": "Deployments",
+    "throughput": "Throughput",
+    "avg": "Avg",
+    "max": "Max",
+    "min": "Min",
+    "ms": "ms",
+    "reqSec": "req/s",
+    "noData": "No performance data available",
+    "errorLoading": "Failed to load performance data",
+    "retry": "Try again"
   }
 }

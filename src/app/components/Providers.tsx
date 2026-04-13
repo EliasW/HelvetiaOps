@@ -3,6 +3,7 @@
 import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 import TransitionProvider from './TransitionProvider';
+import QueryProvider from './QueryProvider';
 
 export default function Providers(
   props: Readonly<{ children: React.ReactNode }>
@@ -10,9 +11,11 @@ export default function Providers(
   const { children } = props;
   return (
     <SessionProvider>
-      <TransitionProvider>
-        {children}
-      </TransitionProvider>
+      <QueryProvider>
+        <TransitionProvider>
+          {children}
+        </TransitionProvider>
+      </QueryProvider>
     </SessionProvider>
   );
 }

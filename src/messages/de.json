@@ -35,19 +35,36 @@
     "title": "Über uns"
   },
   "Dashboard": {
-    "title": "Willkommen im Dashboard",
+    "title": "Dashboard Übersicht",
     "loggedInAs": "Angemeldet als",
     "role": "Rolle",
     "membersList": "Mitgliederliste",
     "adminPanel": "Admin-Panel",
     "manageUsers": "Benutzer Verwalten",
     "viewReports": "Berichte Anzeigen",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "overview": {
+      "projects": "Aktive Projekte",
+      "teams": "Teams",
+      "kpis": "Verfolgte KPIs",
+      "onTrack": "Im Plan",
+      "atRisk": "Gefährdet",
+      "offTrack": "Abweichend",
+      "target": "Ziel",
+      "current": "Aktuell",
+      "noKpis": "Keine KPIs gefunden",
+      "noProjects": "Keine Projekte gefunden",
+      "errorLoading": "Daten konnten nicht geladen werden",
+      "retry": "Erneut versuchen",
+      "recentKpis": "KPI Übersicht",
+      "projectsSummary": "Projektübersicht"
+    }
   },
   "DashboardLayout": {
     "appName": "HelvetiaOps",
     "menu": "Menü",
     "home": "Startseite",
+    "performance": "Leistung",
     "settings": "Einstellungen",
     "user": "Benutzer",
     "loggedInUser": "Angemeldeter Benutzer",
@@ -65,5 +82,30 @@
     "appName": "HelvetiaOps",
     "subtitle": "Operations Management Plattform",
     "copyright": "© 2026 HelvetiaOps. Alle Rechte vorbehalten."
+  },
+  "Performance": {
+    "title": "Leistungsanalyse",
+    "dateRange": "Zeitraum",
+    "last7": "Letzte 7 Tage",
+    "last14": "Letzte 14 Tage",
+    "last30": "Letzte 30 Tage",
+    "last90": "Letzte 90 Tage",
+    "custom": "Benutzerdefiniert",
+    "compare": "Mit vorherigem Zeitraum vergleichen",
+    "currentPeriod": "Aktueller Zeitraum",
+    "previousPeriod": "Vorheriger Zeitraum",
+    "uptime": "Verfügbarkeit",
+    "responseTime": "Antwortzeit",
+    "errorRate": "Fehlerrate",
+    "deployments": "Bereitstellungen",
+    "throughput": "Durchsatz",
+    "avg": "Durchschn.",
+    "max": "Max",
+    "min": "Min",
+    "ms": "ms",
+    "reqSec": "Anf./s",
+    "noData": "Keine Leistungsdaten verfügbar",
+    "errorLoading": "Leistungsdaten konnten nicht geladen werden",
+    "retry": "Erneut versuchen"
   }
 }
