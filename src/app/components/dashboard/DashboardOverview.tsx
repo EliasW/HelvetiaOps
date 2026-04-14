@@ -4,7 +4,9 @@ import { useKpis, useProjects, useTeams } from './queries';
 
 import KPICard from './KPICard';
 import StatCard from './StatCard';
-import { DashboardSkeleton } from './DashboardSkeleton';
+import { SkeletonPage } from '@/app/components/ui/Skeleton';
+import ErrorBanner from '@/app/components/ui/ErrorBanner';
+import EmptyState from '@/app/components/ui/EmptyState';
 
 export default function DashboardOverview() {
   const t = useTranslations('Dashboard.overview');
@@ -18,25 +20,17 @@ export default function DashboardOverview() {
   const error = projects.error || teams.error || kpis.error;
 
   if (isLoading) {
-    return <DashboardSkeleton />;
+    return <SkeletonPage />;
   }
 
   if (isError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <p className="text-red-700 mb-3">{t('errorLoading')}</p>
-        <p className="text-sm text-red-500 mb-4">{error?.message}</p>
-        <button
-          onClick={() => {
-            projects.refetch();
-            teams.refetch();
-            kpis.refetch();
-          }}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-        >
-          {t('retry')}
-        </button>
-      </div>
+      <ErrorBanner
+        title={t('errorLoading')}
+        message={error?.message ?? 'Unknown error'}
+        onRetry={() => { projects.refetch(); teams.refetch(); kpis.refetch(); }}
+        retryLabel={t('retry')}
+      />
     );
   }
 
@@ -82,12 +76,7 @@ export default function DashboardOverview() {
       <div>
         <h2 className="text-lg font-semibold text-neutral-900 mb-4">{t('recentKpis')}</h2>
         {kpiData.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border">
-            <svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <p className="mt-4 text-neutral-600">{t('noKpis')}</p>
-          </div>
+          <EmptyState variant="chart" message={t('noKpis')} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {kpiData.map((kpi) => (
@@ -106,12 +95,7 @@ export default function DashboardOverview() {
       <div>
         <h2 className="text-lg font-semibold text-neutral-900 mb-4">{t('projectsSummary')}</h2>
         {projectData.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border">
-            <svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-            </svg>
-            <p className="mt-4 text-neutral-600">{t('noProjects')}</p>
-          </div>
+          <EmptyState message={t('noProjects')} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {projectData.map((project) => (

@@ -9,6 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import { PaginatedResponse } from '@/types/api';
 import { Project } from '@/types/entities';
 import DataTable, { Column } from './DataTable';
+import { Skeleton, SkeletonTable } from '@/app/components/ui/Skeleton';
+import ErrorBanner from '@/app/components/ui/ErrorBanner';
 
 type ProjectActionMenuProps = Readonly<{
   row: Project;
@@ -215,33 +217,20 @@ export default function ProjectsTable() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 bg-neutral-200 rounded w-48 animate-pulse"></div>
-        <div className="h-10 bg-neutral-200 rounded animate-pulse"></div>
-        <div className="bg-white rounded-lg border overflow-hidden">
-          {['s1', 's2', 's3', 's4', 's5'].map((key) => (
-            <div key={key} className="flex gap-4 px-4 py-3 border-b animate-pulse">
-              <div className="h-4 bg-neutral-200 rounded flex-1"></div>
-              <div className="h-4 bg-neutral-200 rounded w-16"></div>
-              <div className="h-4 bg-neutral-200 rounded w-20"></div>
-              <div className="h-4 bg-neutral-200 rounded w-16"></div>
-            </div>
-          ))}
-        </div>
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-10 w-full" />
+        <SkeletonTable rows={5} cols={6} />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <p className="text-red-700 mb-3">{error?.message}</p>
-        <button
-          onClick={() => refetch()}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-        >
-          {t('noResults')}
-        </button>
-      </div>
+      <ErrorBanner
+        title={t('title')}
+        message={error?.message ?? 'Unknown error'}
+        onRetry={() => refetch()}
+      />
     );
   }
 
