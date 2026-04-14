@@ -57,3 +57,17 @@ export interface KPI {
   createdAt: Date;
   updatedAt: Date;
 }
+
+/**
+ * Activity event for project timeline
+ */
+export interface Activity {
+  id: string;
+  projectId: string;
+  type: 'created' | 'updated' | 'member_added' | 'member_removed' | 'kpi_added' | 'kpi_updated' | 'status_changed' | 'comment';
+  description: string;
+  userId: string;
+  userName: string;
+  metadata?: Record<string, unknown>;
+  createdAt: Date;
+}

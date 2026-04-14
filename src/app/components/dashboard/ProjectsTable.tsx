@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -19,9 +20,27 @@ type ProjectActionMenuProps = Readonly<{
 }>;
 
 function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }: ProjectActionMenuProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const menuHeight = 176; // approximate menu height
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const openUpward = spaceBelow < menuHeight;
+
+      setMenuPos({
+        top: openUpward ? rect.top - menuHeight : rect.bottom + 4,
+        left: rect.right - 144, // 144 = w-36 (9rem)
+      });
+    }
+  }, [isOpen]);
+
   return (
-    <div className="relative">
+    <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={onToggle}
         className="p-1 rounded hover:bg-neutral-100 transition"
@@ -32,25 +51,20 @@ function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }
         </svg>
       </button>
 
-      {isOpen && (
+      {isOpen && createPortal(
         <>
-          <button
-            type="button"
-            className="fixed inset-0 z-10 bg-transparent"
-            aria-label="Close action menu"
-            onClick={onClose}
-          />
-          <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg z-20 py-1">
-            <button
-              type="button"
-              onClick={() => {
-                alert(`View: ${row.name}`);
-                onClose();
-              }}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+          <div className="fixed inset-0 z-[9998]" onClick={onClose} />
+          <div
+            className="fixed w-36 bg-white border rounded-lg shadow-lg z-[9999] py-1"
+            style={{ top: menuPos.top, left: menuPos.left }}
+          >
+            <Link
+              href={`/${locale}/dashboard/projects/${row.id}`}
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+              onClick={onClose}
             >
               {translate('view')}
-            </button>
+            </Link>
             <Link
               href={`/${locale}/dashboard/projects/${row.id}/edit`}
               className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
@@ -60,30 +74,23 @@ function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }
             </Link>
             <button
               type="button"
-              onClick={() => {
-                alert(`Archive: ${row.name}`);
-                onClose();
-              }}
+              onClick={() => { alert(`Archive: ${row.name}`); onClose(); }}
               className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
             >
               {translate('archive')}
             </button>
             <button
               type="button"
-              onClick={() => {
-                if (confirm(translate('confirmDelete'))) {
-                  alert(`Deleted: ${row.name}`);
-                }
-                onClose();
-              }}
+              onClick={() => { if (confirm(translate('confirmDelete'))) alert(`Deleted: ${row.name}`); onClose(); }}
               className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
             >
               {translate('delete')}
             </button>
           </div>
-        </>
+        </>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
 
