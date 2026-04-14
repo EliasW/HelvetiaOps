@@ -131,6 +131,7 @@
     "delete": "Löschen",
     "confirmDelete": "Möchten Sie dieses Projekt wirklich löschen?",
     "noResults": "Keine Projekte entsprechen Ihren Filtern",
+    "newProject": "Neues Projekt",
     "showing": "Zeige",
     "of": "von",
     "results": "Ergebnisse",
@@ -139,5 +140,28 @@
     "rowsPerPage": "Zeilen pro Seite",
     "sortAsc": "Aufsteigend sortieren",
     "sortDesc": "Absteigend sortieren"
+  },
+  "ProjectForm": {
+    "newTitle": "Projekt erstellen",
+    "editTitle": "Projekt bearbeiten",
+    "name": "Name",
+    "description": "Beschreibung",
+    "descriptionHint": "Optionale Details zum Projekt.",
+    "team": "Team",
+    "owner": "Besitzer",
+    "status": "Status",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "statusActive": "Aktiv",
+    "statusInactive": "Inaktiv",
+    "statusArchived": "Archiviert",
+    "saveButton": "Projekt speichern",
+    "cancelButton": "Abbrechen",
+    "successCreate": "Projekt erfolgreich erstellt.",
+    "successEdit": "Projekt erfolgreich aktualisiert.",
+    "unsavedChanges": "Sie haben ungespeicherte Änderungen. Seite trotzdem verlassen?",
+    "requiredField": "Dieses Feld ist erforderlich.",
+    "invalidDate": "Geben Sie ein gültiges Datum ein.",
+    "endDateAfterStart": "Das Enddatum muss gleich oder nach dem Startdatum liegen."
   }
 }

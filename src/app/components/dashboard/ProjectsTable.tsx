@@ -1,11 +1,91 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { PaginatedResponse } from '@/types/api';
 import { Project } from '@/types/entities';
 import DataTable, { Column } from './DataTable';
+
+type ProjectActionMenuProps = Readonly<{
+  row: Project;
+  isOpen: boolean;
+  locale: string;
+  onToggle: () => void;
+  onClose: () => void;
+  translate: (key: string) => string;
+}>;
+
+function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }: ProjectActionMenuProps) {
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="p-1 rounded hover:bg-neutral-100 transition"
+        aria-label="Actions"
+      >
+        <svg className="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-10 bg-transparent"
+            aria-label="Close action menu"
+            onClick={onClose}
+          />
+          <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg z-20 py-1">
+            <button
+              type="button"
+              onClick={() => {
+                alert(`View: ${row.name}`);
+                onClose();
+              }}
+              className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+            >
+              {translate('view')}
+            </button>
+            <Link
+              href={`/${locale}/dashboard/projects/${row.id}/edit`}
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+              onClick={onClose}
+            >
+              {translate('edit')}
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                alert(`Archive: ${row.name}`);
+                onClose();
+              }}
+              className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+            >
+              {translate('archive')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (confirm(translate('confirmDelete'))) {
+                  alert(`Deleted: ${row.name}`);
+                }
+                onClose();
+              }}
+              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+            >
+              {translate('delete')}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 const statusColors: Record<string, string> = {
   active: 'bg-emerald-100 text-emerald-700',
@@ -13,8 +93,28 @@ const statusColors: Record<string, string> = {
   archived: 'bg-amber-100 text-amber-700',
 };
 
+function renderProjectActions(
+  row: Project,
+  actionMenuId: string | null,
+  locale: string,
+  setActionMenuId: (id: string | null) => void,
+  translate: (key: string) => string
+) {
+  return (
+    <ProjectActionMenu
+      row={row}
+      isOpen={actionMenuId === row.id}
+      locale={locale}
+      onToggle={() => setActionMenuId(actionMenuId === row.id ? null : row.id)}
+      onClose={() => setActionMenuId(null)}
+      translate={translate}
+    />
+  );
+}
+
 export default function ProjectsTable() {
   const t = useTranslations('ProjectsTable');
+  const params = useParams() as { locale: string };
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [actionMenuId, setActionMenuId] = useState<string | null>(null);
 
@@ -52,7 +152,7 @@ export default function ProjectsTable() {
       sortable: true,
       render: (row) => (
         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[row.status] ?? ''}`}>
-          {t(row.status as 'active' | 'inactive' | 'archived')}
+          {t(row.status)}
         </span>
       ),
     },
@@ -111,8 +211,8 @@ export default function ProjectsTable() {
         <div className="h-8 bg-neutral-200 rounded w-48 animate-pulse"></div>
         <div className="h-10 bg-neutral-200 rounded animate-pulse"></div>
         <div className="bg-white rounded-lg border overflow-hidden">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex gap-4 px-4 py-3 border-b animate-pulse">
+          {['s1', 's2', 's3', 's4', 's5'].map((key) => (
+            <div key={key} className="flex gap-4 px-4 py-3 border-b animate-pulse">
               <div className="h-4 bg-neutral-200 rounded flex-1"></div>
               <div className="h-4 bg-neutral-200 rounded w-16"></div>
               <div className="h-4 bg-neutral-200 rounded w-20"></div>
@@ -140,7 +240,15 @@ export default function ProjectsTable() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">{t('title')}</h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <Link
+          href={`/${params.locale}/dashboard/projects/new`}
+          className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+        >
+          {t('newProject')}
+        </Link>
+      </div>
 
       <DataTable
         data={filtered}
@@ -167,53 +275,7 @@ export default function ProjectsTable() {
           </div>
         }
         actionsLabel={t('actions')}
-        actions={(row) => (
-          <div className="relative">
-            <button
-              onClick={() => setActionMenuId(actionMenuId === row.id ? null : row.id)}
-              className="p-1 rounded hover:bg-neutral-100 transition"
-              aria-label="Actions"
-            >
-              <svg className="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
-              </svg>
-            </button>
-            {actionMenuId === row.id && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setActionMenuId(null)} />
-                <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg z-20 py-1">
-                  <button
-                    onClick={() => { alert(`View: ${row.name}`); setActionMenuId(null); }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
-                  >
-                    {t('view')}
-                  </button>
-                  <button
-                    onClick={() => { alert(`Edit: ${row.name}`); setActionMenuId(null); }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
-                  >
-                    {t('edit')}
-                  </button>
-                  <button
-                    onClick={() => { alert(`Archive: ${row.name}`); setActionMenuId(null); }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
-                  >
-                    {t('archive')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(t('confirmDelete'))) alert(`Deleted: ${row.name}`);
-                      setActionMenuId(null);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
-                  >
-                    {t('delete')}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        actions={(row) => renderProjectActions(row, actionMenuId, params.locale, setActionMenuId, t)}
         showingLabel={t('showing')}
         ofLabel={t('of')}
         resultsLabel={t('results')}

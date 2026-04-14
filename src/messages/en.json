@@ -131,6 +131,7 @@
     "delete": "Delete",
     "confirmDelete": "Are you sure you want to delete this project?",
     "noResults": "No projects match your filters",
+    "newProject": "New project",
     "showing": "Showing",
     "of": "of",
     "results": "results",
@@ -139,5 +140,28 @@
     "rowsPerPage": "Rows per page",
     "sortAsc": "Sort ascending",
     "sortDesc": "Sort descending"
+  },
+  "ProjectForm": {
+    "newTitle": "Create project",
+    "editTitle": "Edit project",
+    "name": "Name",
+    "description": "Description",
+    "descriptionHint": "Optional details about the project.",
+    "team": "Team",
+    "owner": "Owner",
+    "status": "Status",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "statusArchived": "Archived",
+    "saveButton": "Save project",
+    "cancelButton": "Cancel",
+    "successCreate": "Project created successfully.",
+    "successEdit": "Project updated successfully.",
+    "unsavedChanges": "You have unsaved changes. Leave this page and discard them?",
+    "requiredField": "This field is required.",
+    "invalidDate": "Enter a valid date.",
+    "endDateAfterStart": "End date must be on or after the start date."
   }
 }
