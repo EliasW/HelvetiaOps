@@ -1,4 +1,5 @@
 import { mockProjects, mockUsers } from '@/lib/mock/data';
+import { generateLargeDataset } from '@/lib/mock/generateLargeDataset';
 import { withMockBehavior, paginated, success, error } from '@/lib/mock/helpers';
 import { ApiErrorCode } from '@/types/api';
 
@@ -9,17 +10,25 @@ export async function GET(req: Request) {
   const teamId = searchParams.get('teamId');
   const status = searchParams.get('status');
   const ownerId = searchParams.get('ownerId');
+  const count = searchParams.get('count');
 
   return withMockBehavior(() => {
-    let filtered = mockProjects;
-    if (teamId) filtered = filtered.filter((p) => p.teamId === teamId);
-    if (status) filtered = filtered.filter((p) => p.status === status);
-    if (ownerId) filtered = filtered.filter((p) => p.owner === ownerId);
+    // Use generated large dataset if count param is provided
+    let source = count ? generateLargeDataset(Number.parseInt(count)) : mockProjects;
+
+    if (teamId) source = source.filter((p) => p.teamId === teamId);
+    if (status) source = source.filter((p) => p.status === status);
+    if (ownerId) source = source.filter((p) => p.owner === ownerId);
+
+    // For large datasets, return all data (virtualized table handles rendering)
+    if (count) {
+      return paginated(source, 1, source.length, source.length);
+    }
 
     const start = (page - 1) * limit;
-    const slice = filtered.slice(start, start + limit);
-    return paginated(slice, page, limit, filtered.length);
-  });
+    const slice = source.slice(start, start + limit);
+    return paginated(slice, page, limit, source.length);
+  }, count ? 0.02 : 0.1); // Lower error rate for large datasets
 }
 
 export async function POST(req: Request) {
