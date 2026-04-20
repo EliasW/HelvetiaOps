@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, ReactNode } from 'react';
+import { useState, useMemo, ReactNode, useCallback, KeyboardEvent } from 'react';
 
 export interface Column<T> {
   key: string;
@@ -56,17 +56,28 @@ export default function DataTable<T>({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
 
-  const handleSort = (key: string) => {
-    if (sortKey === key) {
-      if (sortDir === 'asc') setSortDir('desc');
-      else if (sortDir === 'desc') { setSortKey(null); setSortDir(null); }
-      else setSortDir('asc');
-    } else {
-      setSortKey(key);
+  const handleSort = useCallback((key: string) => {
+    setSortKey((prevKey) => {
+      if (prevKey === key) {
+        setSortDir((prevDir) => {
+          if (prevDir === 'asc') return 'desc';
+          if (prevDir === 'desc') { setSortKey(null); return null; }
+          return 'asc';
+        });
+        return key;
+      }
       setSortDir('asc');
-    }
+      return key;
+    });
     setPage(1);
-  };
+  }, []);
+
+  const handleHeaderKeyDown = useCallback((e: KeyboardEvent, key: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSort(key);
+    }
+  }, [handleSort]);
 
   const filtered = useMemo(() => {
     let result = data;
@@ -92,15 +103,23 @@ export default function DataTable<T>({
   const startIdx = (page - 1) * pageSize + 1;
   const endIdx = Math.min(page * pageSize, sorted.length);
 
+  const getAriaSortValue = (col: Column<T>): 'ascending' | 'descending' | 'none' | undefined => {
+    if (!col.sortable) return undefined;
+    if (sortKey === col.key && sortDir === 'asc') return 'ascending';
+    if (sortKey === col.key && sortDir === 'desc') return 'descending';
+    return 'none';
+  };
+
   return (
     <div className="space-y-4">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between" role="toolbar" aria-label="Table controls">
         <input
-          type="text"
+          type="search"
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           placeholder={searchPlaceholder}
+          aria-label={searchPlaceholder}
           className="px-3 py-2 border rounded-lg text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-neutral-400"
         />
         {filterSlot}
@@ -108,21 +127,26 @@ export default function DataTable<T>({
 
       {/* Table */}
       <div className="overflow-x-auto rounded-lg border bg-white">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" role="table">
           <thead>
             <tr className="bg-neutral-50 border-b">
               {columns.map((col) => (
                 <th
                   key={col.key}
+                  scope="col"
+                  role="columnheader"
+                  aria-sort={getAriaSortValue(col)}
+                  tabIndex={col.sortable ? 0 : undefined}
                   className={`px-4 py-3 text-left font-medium text-neutral-600 ${
-                    col.sortable ? 'cursor-pointer select-none hover:bg-neutral-100' : ''
+                    col.sortable ? 'cursor-pointer select-none hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-neutral-400' : ''
                   }`}
                   onClick={() => col.sortable && handleSort(col.key)}
+                  onKeyDown={(e) => col.sortable && handleHeaderKeyDown(e, col.key)}
                 >
                   <div className="flex items-center gap-1">
                     {col.label}
                     {col.sortable && sortKey === col.key && (
-                      <span className="text-neutral-400">
+                      <span className="text-neutral-400" aria-hidden="true">
                         {sortDir === 'asc' ? '↑' : '↓'}
                       </span>
                     )}
@@ -130,7 +154,7 @@ export default function DataTable<T>({
                 </th>
               ))}
               {actions && (
-                <th className="px-4 py-3 text-left font-medium text-neutral-600">
+                <th scope="col" className="px-4 py-3 text-left font-medium text-neutral-600">
                   {actionsLabel}
                 </th>
               )}
@@ -142,6 +166,7 @@ export default function DataTable<T>({
                 <td
                   colSpan={columns.length + (actions ? 1 : 0)}
                   className="px-4 py-12 text-center text-neutral-500"
+                  role="status"
                 >
                   {noResultsMessage}
                 </td>
@@ -170,16 +195,17 @@ export default function DataTable<T>({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
-        <div className="text-neutral-500">
+      <nav aria-label="Pagination" className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+        <div className="text-neutral-500" aria-live="polite" aria-atomic="true">
           {sorted.length > 0
             ? `${showingLabel} ${startIdx}-${endIdx} ${ofLabel} ${sorted.length} ${resultsLabel}`
             : ''}
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-neutral-500">{rowsPerPageLabel}:</span>
+            <label htmlFor="rows-per-page" className="text-neutral-500">{rowsPerPageLabel}:</label>
             <select
+              id="rows-per-page"
               value={pageSize}
               onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
               className="border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
@@ -189,10 +215,11 @@ export default function DataTable<T>({
               ))}
             </select>
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1" role="group" aria-label="Page navigation">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
+              aria-label={prevLabel}
               className="px-3 py-1 border rounded hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               {prevLabel}
@@ -202,10 +229,12 @@ export default function DataTable<T>({
               .map((p, i, arr) => (
                 <span key={p} className="flex items-center">
                   {i > 0 && arr[i - 1] !== p - 1 && (
-                    <span className="px-1 text-neutral-400">…</span>
+                    <span className="px-1 text-neutral-400" aria-hidden="true">…</span>
                   )}
                   <button
                     onClick={() => setPage(p)}
+                    aria-label={`Page ${p}`}
+                    aria-current={p === page ? 'page' : undefined}
                     className={`px-3 py-1 border rounded transition ${
                       p === page
                         ? 'bg-neutral-800 text-white border-neutral-800'
@@ -219,13 +248,14 @@ export default function DataTable<T>({
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
+              aria-label={nextLabel}
               className="px-3 py-1 border rounded hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               {nextLabel}
             </button>
           </div>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

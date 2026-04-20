@@ -41,7 +41,7 @@ export default function DashboardPageContent({
           menuLabel={t('menu')}
         />
 
-        <main className="flex-1 p-6 bg-neutral-100 text-neutral-900">
+        <main id="main-content" className="flex-1 p-6 bg-neutral-100 text-neutral-900" tabIndex={-1}>
           {children}
         </main>
       </div>

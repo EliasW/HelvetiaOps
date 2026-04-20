@@ -23,21 +23,60 @@ type ProjectActionMenuProps = Readonly<{
 
 function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }: ProjectActionMenuProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      const menuHeight = 176; // approximate menu height
+      const menuHeight = 176;
       const spaceBelow = window.innerHeight - rect.bottom;
       const openUpward = spaceBelow < menuHeight;
 
       setMenuPos({
         top: openUpward ? rect.top - menuHeight : rect.bottom + 4,
-        left: rect.right - 144, // 144 = w-36 (9rem)
+        left: rect.right - 144,
       });
     }
   }, [isOpen]);
+
+  // Focus first menu item when menu opens
+  useEffect(() => {
+    if (isOpen && menuRef.current) {
+      const firstItem = menuRef.current.querySelector<HTMLElement>('[role="menuitem"]');
+      firstItem?.focus();
+    }
+  }, [isOpen]);
+
+  // Return focus to trigger when menu closes
+  const handleClose = () => {
+    onClose();
+    requestAnimationFrame(() => buttonRef.current?.focus());
+  };
+
+  const handleMenuKeyDown = (e: React.KeyboardEvent) => {
+    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
+    if (!items?.length) return;
+    const currentIndex = Array.from(items).findIndex((el) => el === document.activeElement);
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        items[(currentIndex + 1) % items.length].focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        items[(currentIndex - 1 + items.length) % items.length].focus();
+        break;
+      case 'Escape':
+        e.preventDefault();
+        handleClose();
+        break;
+      case 'Tab':
+        handleClose();
+        break;
+    }
+  };
 
   return (
     <>
@@ -45,46 +84,60 @@ function ProjectActionMenu({ row, isOpen, locale, onToggle, onClose, translate }
         ref={buttonRef}
         type="button"
         onClick={onToggle}
-        className="p-1 rounded hover:bg-neutral-100 transition"
+        className="p-1 rounded hover:bg-neutral-100 transition focus:outline-none focus:ring-2 focus:ring-neutral-400"
         aria-label="Actions"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
       >
-        <svg className="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
         </svg>
       </button>
 
       {isOpen && createPortal(
         <>
-          <div className="fixed inset-0 z-[9998]" onClick={onClose} />
+          <div className="fixed inset-0 z-[9998]" onClick={handleClose} aria-hidden="true" />
           <div
+            ref={menuRef}
+            role="menu"
+            aria-label={`Actions for ${row.name}`}
             className="fixed w-36 bg-white border rounded-lg shadow-lg z-[9999] py-1"
             style={{ top: menuPos.top, left: menuPos.left }}
+            onKeyDown={handleMenuKeyDown}
           >
             <Link
               href={`/${locale}/dashboard/projects/${row.id}`}
-              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
-              onClick={onClose}
+              role="menuitem"
+              tabIndex={-1}
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 focus:outline-none transition"
+              onClick={handleClose}
             >
               {translate('view')}
             </Link>
             <Link
               href={`/${locale}/dashboard/projects/${row.id}/edit`}
-              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
-              onClick={onClose}
+              role="menuitem"
+              tabIndex={-1}
+              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 focus:outline-none transition"
+              onClick={handleClose}
             >
               {translate('edit')}
             </Link>
             <button
               type="button"
-              onClick={() => { alert(`Archive: ${row.name}`); onClose(); }}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 transition"
+              role="menuitem"
+              tabIndex={-1}
+              onClick={() => { alert(`Archive: ${row.name}`); handleClose(); }}
+              className="w-full text-left px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 focus:outline-none transition"
             >
               {translate('archive')}
             </button>
             <button
               type="button"
-              onClick={() => { if (confirm(translate('confirmDelete'))) alert(`Deleted: ${row.name}`); onClose(); }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+              role="menuitem"
+              tabIndex={-1}
+              onClick={() => { if (confirm(translate('confirmDelete'))) alert(`Deleted: ${row.name}`); handleClose(); }}
+              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 focus:outline-none transition"
             >
               {translate('delete')}
             </button>

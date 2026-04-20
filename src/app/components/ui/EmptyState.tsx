@@ -39,7 +39,7 @@ const variantIcons: Record<EmptyVariant, React.ReactNode> = {
 
 export default function EmptyState({ title, message, variant = 'default', action }: EmptyStateProps) {
   return (
-    <div className="text-center py-12 bg-white rounded-lg border">
+    <div className="text-center py-12 bg-white rounded-lg border" role="status">
       <div className="mx-auto text-neutral-400">{variantIcons[variant]}</div>
       {title && <h3 className="mt-4 text-sm font-medium text-neutral-900">{title}</h3>}
       <p className="mt-2 text-sm text-neutral-500">{message}</p>

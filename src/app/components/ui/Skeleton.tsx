@@ -8,7 +8,7 @@ interface SkeletonProps {
 
 /** Base skeleton block */
 export function Skeleton({ className = '' }: SkeletonProps) {
-  return <div className={`bg-neutral-200 rounded animate-pulse ${className}`} />;
+  return <div className={`bg-neutral-200 rounded animate-pulse ${className}`} aria-hidden="true" />;
 }
 
 /** Single line of text */
@@ -54,7 +54,8 @@ export function SkeletonTableRow({ cols = 4 }: { cols?: number }) {
 /** Full table skeleton */
 export function SkeletonTable({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
   return (
-    <div className="bg-white rounded-lg border overflow-hidden">
+    <div className="bg-white rounded-lg border overflow-hidden" role="status" aria-label="Loading table" aria-busy="true">
+      <span className="sr-only">Loading table data...</span>
       {/* Header */}
       <div className="flex gap-4 px-4 py-3 bg-neutral-50 border-b">
         {Array.from({ length: cols }).map((_, i) => (
@@ -77,7 +78,8 @@ export function SkeletonAvatar({ size = 'w-8 h-8' }: { size?: string }) {
 /** Page-level skeleton with title + content */
 export function SkeletonPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" role="status" aria-label="Loading" aria-busy="true">
+      <span className="sr-only">Loading content...</span>
       <Skeleton className="h-8 w-48" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
