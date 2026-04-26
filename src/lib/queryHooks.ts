@@ -5,23 +5,23 @@ import { ApiResponse } from '@/types/api';
  * Custom hook for API queries with error handling
  */
 export function useApiQuery<T>(
-  queryKey: (string | number | object)[],
+  queryKey: readonly unknown[],
   queryFn: () => Promise<ApiResponse<T>>,
-  options?: Omit<UseQueryOptions<ApiResponse<T>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<T, Error>, 'queryKey' | 'queryFn'>
 ): UseQueryResult<T, Error> {
-  return useQuery({
+  return useQuery<T, Error>({
     queryKey,
     queryFn: async () => {
       const response = await queryFn();
-      
+
       if (!response.success) {
         throw new Error(response.error?.message || 'An error occurred');
       }
-      
+
       return response.data as T;
     },
     ...options,
-  }) as UseQueryResult<T, Error>;
+  });
 }
 
 /**
