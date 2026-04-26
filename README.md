@@ -1,53 +1,129 @@
 # HelvetiaOps
 
-This project now uses [NextAuth](https://next-auth.js.org/) for authentication. Install the package with:
+Operations management dashboard built with Next.js 16, TypeScript, and Tailwind CSS. Demonstrates production-grade patterns for internationalization, authentication, data visualization, and performance optimization.
+
+**[Live Demo →](https://helvetiaops.vercel.app)**
+
+---
+
+## Demo Credentials
+
+Any email/password combination works. The role is determined by the email address:
+
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@demo.com` | `demo` | Admin — full access |
+| `manager@demo.com` | `demo` | Manager — can edit projects |
+| `viewer@demo.com` | `demo` | Viewer — read-only access |
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Server Components)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS 4
+- **Authentication:** NextAuth.js v4 (JWT, role-based access)
+- **Internationalization:** next-intl (English / German)
+- **Data Fetching:** TanStack Query v5
+- **Charts:** Recharts
+- **Forms:** react-hook-form + Zod validation
+- **Virtualization:** @tanstack/react-virtual (10k+ rows)
+
+---
+
+## Features
+
+### Dashboard
+- KPI cards with status indicators (on-track, at-risk, off-track)
+- Project summary with team and member counts
+- Loading skeletons, error banners, empty states
+
+### Performance Analytics
+- Line and bar charts for uptime, response time, error rate, deployments, throughput
+- Date range filter (7d / 14d / 30d / 90d)
+- Comparison with previous period (overlay)
+
+### Projects
+- Data table with pagination, sorting, and filtering
+- Row actions (view, edit, archive, delete) via portal-based dropdown
+- Project detail page with overview and activity timeline
+- Role-based access: viewers see read-only UI
+- Virtualized table rendering 10,000 rows at 60fps
+
+### Forms
+- Project create/edit form with Zod schema validation
+- Cross-field validation (end date must be after start date)
+- Unsaved changes warning
+
+### Accessibility
+- ARIA labels and roles on all interactive components
+- Keyboard navigation (arrow keys, Enter, Escape)
+- Focus management (auto-focus, focus return on menu close)
+- Skip-to-content link
+- Screen reader announcements for dynamic content
+
+### Internationalization
+- Full English and German translations
+- Locale-prefixed routing (`/en/...`, `/de/...`)
+- Language switcher with prefetching for instant switching
+
+---
+
+## Project Structure
+
+```
+src/
+  app/
+    [locale]/           ← Locale-prefixed pages
+      dashboard/        ← Protected dashboard routes
+      auth/             ← Authentication pages
+    api/                ← Mock REST API endpoints
+    components/
+      ui/               ← Reusable primitives (Skeleton, ErrorBanner, EmptyState)
+      dashboard/        ← Feature components (DataTable, KPICard, Charts)
+  lib/
+    mock/               ← Mock data and API helpers
+    schemas/            ← Zod validation schemas
+  types/                ← TypeScript interfaces (entities, API contracts)
+  messages/             ← Translation files (en.json, de.json)
+```
+
+---
+
+## Getting Started
 
 ```bash
-npm install next-auth
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env.local
+
+# Start development server
+npm run dev
 ```
 
-A mock credentials provider is configured under `src/app/api/auth/[...nextauth]/route.ts` and the
-app wraps pages with `SessionProvider` in `app/layout.tsx`.
+Open [http://localhost:3000](http://localhost:3000) — redirects to `/en`.
 
-## Protected Routes & Redirects
+---
 
-### Route Protection with Middleware
+## Architecture
 
-Server-side middleware in `middleware.ts` protects authenticated routes:
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed documentation on:
+- Architecture decisions and reasoning
+- Tradeoffs and alternatives considered
+- Future improvements roadmap
 
-- **Protected routes** — `/dashboard` requires authentication
-- **Automatic redirects** — Unauthenticated users accessing protected routes are redirected to `/auth`
-- **Server-side enforcement** — Protection happens at the middleware layer, before the page renders
+---
 
-### How It Works
+## Scripts
 
-1. User tries to access `/dashboard` without being logged in
-2. Middleware checks for valid session
-3. If no session exists, user is redirected to `/auth` (login page)
-4. After successful login, user is redirected back to `/dashboard`
-
-## Roles & Permissions
-
-This project defines three built-in roles:
-
-- `admin` — full access, can perform administrative actions
-- `manager` — can manage resources and users, but not full admin tasks
-- `viewer` — read-only access to reports and dashboards
-
-Permissions are available via helpers in `src/utils/permissions.ts` and a small `Can` component at `src/components/Can.tsx` which guards UI actions. Example usage in the dashboard:
-
-```tsx
-<Can minRole="manager">
-	<button>Manage Users</button>
-</Can>
-```
-
-Roles are assigned by the mock credentials provider:
-
-- emails containing `admin` → `admin` role
-- emails containing `manager` or `man.` → `manager` role
-- all others → `viewer` role
-
-Roles are stored in the JWT and surfaced as `session.user.role` on the client.
-
-HelvetiaOps — Enterprise Operations Management Portal Frontend-focused Next.js application with role-based access control, internationalization (EN/DE), data-heavy tables, and enterprise UX patterns.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run tests (Vitest) |
+| `npm run format` | Format code (Prettier) |

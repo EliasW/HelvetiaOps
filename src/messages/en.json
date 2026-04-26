@@ -78,7 +78,11 @@
     "email": "Email",
     "password": "Password",
     "loginButton": "Log In",
-    "signingIn": "Signing in…"
+    "signingIn": "Signing in…",
+    "demoHint": "Demo: Use any email with any password. Role is based on email.",
+    "demoAdmin": "admin@demo.com → Admin (full access)",
+    "demoManager": "manager@demo.com → Manager (can edit)",
+    "demoViewer": "viewer@demo.com → Viewer (read-only)"
   },
   "AuthLayout": {
     "appName": "HelvetiaOps",

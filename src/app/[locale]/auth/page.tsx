@@ -94,6 +94,16 @@ export default function AuthPage() {
             {loading ? t('signingIn') : t('loginButton')}
           </button>
         </form>
+
+        {/* Demo credentials hint */}
+        <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
+          <p className="text-sm text-blue-800 font-medium mb-2">💡 {t('demoHint')}</p>
+          <ul className="text-xs text-blue-700 space-y-1">
+            <li>{t('demoAdmin')}</li>
+            <li>{t('demoManager')}</li>
+            <li>{t('demoViewer')}</li>
+          </ul>
+        </div>
       </div>
     </AuthPageContent>
   );
