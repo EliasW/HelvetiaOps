@@ -2,7 +2,7 @@
 
 Operations management dashboard built with Next.js 16, TypeScript, and Tailwind CSS. Demonstrates production-grade patterns for internationalization, authentication, data visualization, and performance optimization.
 
-**[Live Demo →](https://helvetiaops.vercel.app)**
+**[Live Demo →](https://helvetia-ops.vercel.app)**
 
 ---
 
